@@ -1,0 +1,14 @@
+import groovy.json.JsonOutput
+gradle.projectsEvaluated {
+ def app=gradle.rootProject.findProject(':app')
+ if (app == null) return
+ app.tasks.register('recordInstrumentationClasspath') {
+  doLast {
+   def out=[:]
+   ['releaseRuntimeClasspath','releaseAndroidTestRuntimeClasspath'].each { name ->
+    out[name]=app.configurations.getByName(name).incoming.artifactView { attributes.attribute(org.gradle.api.attributes.Attribute.of('artifactType', String), 'android-classes-jar') }.artifacts.artifacts.collect { a -> [module:a.id.componentIdentifier.displayName,file:a.file.absolutePath] }
+   }
+   new File(app.rootProject.projectDir.parentFile.parentFile, 'reports/vc7/classpaths.json').text=JsonOutput.prettyPrint(JsonOutput.toJson(out))
+  }
+ }
+}

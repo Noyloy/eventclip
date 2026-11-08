@@ -1,0 +1,95 @@
+{
+  "input": "analytic single-sample impulses; no media/speech",
+  "sampleRate": 44100,
+  "channels": 1,
+  "frames": 44100,
+  "impulseFrames": [
+    4410,
+    39690
+  ],
+  "referenceSha256": "64809a7105c7b467fbed1993cb720d8d8940115af08cb4d542a11726092e6e52",
+  "interpretation": "Host encoder metadata only. Android decoder trimming/PTS not established; guard unchanged. Native raw probe test must report frame counts/first-last samples and peaks; no automatic product trim.",
+  "encodings": [
+    {
+      "file": "impulses-lame.mp3",
+      "codec": "libmp3lame",
+      "sha256": "0291dc36292fc798a6eb8d8ce652e16ba684eaf6cf654d57f0ee92886c06e429",
+      "hostEncoderPacketSideDataNotAndroidProof": [
+        {
+          "pts": 0,
+          "duration": 368640,
+          "side_data_list": [
+            {
+              "side_data_type": "Skip Samples",
+              "skip_samples": 1105,
+              "discard_padding": 0,
+              "skip_reason": 0,
+              "discard_reason": 0
+            }
+          ]
+        },
+        {
+          "pts": 14376960,
+          "duration": 368640,
+          "side_data_list": [
+            {
+              "side_data_type": "Skip Samples",
+              "skip_samples": 0,
+              "discard_padding": 875,
+              "skip_reason": 0,
+              "discard_reason": 0
+            }
+          ]
+        }
+      ],
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-y",
+        "-loglevel",
+        "error",
+        "-i",
+        "<PROJECT_ROOT>/reports/product-m06-synthetic/impulses-reference.wav",
+        "-c:a",
+        "libmp3lame",
+        "-b:a",
+        "192k",
+        "<PROJECT_ROOT>/reports/product-m06-synthetic/impulses-lame.mp3"
+      ]
+    },
+    {
+      "file": "impulses-aac.m4a",
+      "codec": "aac",
+      "sha256": "5a9864f7cdfc179711faaa0514944ee22195e3bd8ea5228e934c9a5722c38b41",
+      "hostEncoderPacketSideDataNotAndroidProof": [
+        {
+          "pts": -1024,
+          "duration": 1024,
+          "side_data_list": [
+            {
+              "side_data_type": "Skip Samples",
+              "skip_samples": 1024,
+              "discard_padding": 0,
+              "skip_reason": 0,
+              "discard_reason": 0
+            }
+          ]
+        }
+      ],
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-y",
+        "-loglevel",
+        "error",
+        "-i",
+        "<PROJECT_ROOT>/reports/product-m06-synthetic/impulses-reference.wav",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "192k",
+        "<PROJECT_ROOT>/reports/product-m06-synthetic/impulses-aac.m4a"
+      ]
+    }
+  ]
+}

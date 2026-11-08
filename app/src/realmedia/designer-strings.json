@@ -1,0 +1,623 @@
+{
+  "schema": "eventclip-android-private-build-strings/v1",
+  "status": "DESIGN ARTIFACT — proposed copy for Engineer; not device-accepted",
+  "date": "2026-11-07 (Asia/Jerusalem)",
+  "bidi": "Wrap every placeholder value in FSI…PDI (U+2068…U+2069) or equivalent BidiFormatter.unicodeWrap; Hebrew prefixes (ב/כ/ל) stay outside the isolate. Dates/times/sizes formatted with device locale (Hebrew month names in he).",
+  "stateKeysFromEngineerContract": {
+    "import": [
+      "COPYING",
+      "CHECKING",
+      "READY",
+      "IMPORT_CANCELLED",
+      "ACCESS_UNREADABLE",
+      "UNSUPPORTED_MEDIA",
+      "PROTECTED_AUDIO",
+      "COPY_FAILED",
+      "STORAGE_LOW",
+      "ITEM_LIMIT",
+      "SOURCE_SIZE_LIMIT",
+      "DURATION_LIMIT",
+      "SONG_TOO_SHORT"
+    ],
+    "export": [
+      "PLANNING",
+      "READY_TO_CREATE",
+      "EXPORTING",
+      "CANCEL_REQUESTED",
+      "EXPORT_CANCELLED",
+      "EXPORT_INTERRUPTED",
+      "EXPORT_FAILED",
+      "EXPORT_READY"
+    ]
+  },
+  "strings": {
+    "start.title": {
+      "en": "Birthday movie",
+      "he": "סרט יום הולדת"
+    },
+    "start.body": {
+      "en": "Choose photos and videos from your phone. Everything stays on this phone.",
+      "he": "בחרו תמונות וסרטונים מהטלפון. הכול נשאר בטלפון הזה."
+    },
+    "start.cta": {
+      "en": "Choose photos and videos",
+      "he": "בחירת תמונות וסרטונים"
+    },
+    "review.title": {
+      "en": "Your photos and videos",
+      "he": "התמונות והסרטונים שלכם"
+    },
+    "review.counts": {
+      "en": "{included} in the movie · {excluded} left out",
+      "he": "{included} בסרט · {excluded} בחוץ",
+      "note": "Wrap {included}/{excluded} in FSI…PDI (U+2068/U+2069)."
+    },
+    "review.size": {
+      "en": "Imported: {size} of 1 GiB (includes song)",
+      "he": "יובא: {size} מתוך ⁨1 GiB⁩ (כולל השיר)",
+      "note": "{size} is a locale-formatted size token, isolated. Cap = 1 GiB (1,073,741,824 bytes). Cap = 1 GiB (1,024 MiB = 1,073,741,824 bytes) of ALL committed private source copies incl. excluded items and current song. Number+unit isolated as one LTR token."
+    },
+    "review.item_toggle_on": {
+      "en": "In the movie",
+      "he": "בסרט",
+      "note": "TalkBack state for item switch"
+    },
+    "review.item_toggle_off": {
+      "en": "Left out",
+      "he": "בחוץ"
+    },
+    "review.undo": {
+      "en": "Undo",
+      "he": "ביטול"
+    },
+    "review.order_toggle": {
+      "en": "Keep time order (oldest first)",
+      "he": "שמירה על סדר הזמנים (מהישן לחדש)"
+    },
+    "review.add_more": {
+      "en": "Add more",
+      "he": "הוספת עוד"
+    },
+    "review.cta": {
+      "en": "Choose a song",
+      "he": "בחירת שיר"
+    },
+    "song.title": {
+      "en": "Choose a song",
+      "he": "בחירת שיר"
+    },
+    "song.body": {
+      "en": "Pick a music file saved on this phone (MP3, M4A/AAC or WAV).",
+      "he": "בחרו קובץ מוזיקה השמור בטלפון (MP3, ‏M4A/AAC או WAV)."
+    },
+    "song.cta": {
+      "en": "Browse files",
+      "he": "עיון בקבצים"
+    },
+    "voices.title": {
+      "en": "Protect voices (optional)",
+      "he": "הגנה על קולות (לא חובה)"
+    },
+    "voices.body": {
+      "en": "Every clip keeps its own sound. Mark where someone talks or sings, and the music gets softer there.",
+      "he": "כל סרטון שומר על הצליל שלו. סמנו איפה מדברים או שרים, והמוזיקה תהיה רכה יותר שם.",
+      "note": "Owner M06: marks soften MUSIC only; unmarked music normal; no auto speech detection/normalization/muting."
+    },
+    "voices.mark_start": {
+      "en": "Mark start",
+      "he": "סימון התחלה"
+    },
+    "voices.mark_end": {
+      "en": "Mark end",
+      "he": "סימון סוף"
+    },
+    "voices.remove_mark": {
+      "en": "Remove mark",
+      "he": "הסרת סימון"
+    },
+    "voices.next_clip": {
+      "en": "Next clip",
+      "he": "לסרטון הבא"
+    },
+    "voices.skip_all": {
+      "en": "Continue without marking voices",
+      "he": "המשך בלי סימון קולות",
+      "note": "Primary CTA when savedValidRanges == 0. Adds no ranges."
+    },
+    "voices.clip_position": {
+      "en": "Clip {n} of {total} · {time}",
+      "he": "סרטון {n} מתוך {total} · {time}",
+      "note": "Isolate {n},{total},{time} individually; timecodes LTR."
+    },
+    "import.COPYING": {
+      "en": "Copying to EventClip… {done} of {total}",
+      "he": "מעתיקים ל-EventClip… {done} מתוך {total}"
+    },
+    "import.CHECKING": {
+      "en": "Checking files…",
+      "he": "בודקים את הקבצים…"
+    },
+    "import.READY": {
+      "en": "Ready",
+      "he": "מוכן"
+    },
+    "import.cancel": {
+      "en": "Stop importing",
+      "he": "עצירת הייבוא"
+    },
+    "import.IMPORT_CANCELLED": {
+      "en": "Import stopped. Unfinished copies were removed; items already ready are kept.",
+      "he": "הייבוא נעצר. עותקים שלא הושלמו נמחקו; פריטים מוכנים נשמרו."
+    },
+    "import.ACCESS_UNREADABLE": {
+      "en": "We couldn't open this item. Choose it again or remove it.",
+      "he": "לא הצלחנו לפתוח את הפריט. בחרו אותו שוב או הסירו אותו."
+    },
+    "import.UNSUPPORTED_MEDIA": {
+      "en": "This file type isn't supported yet in this build. Choose another file.",
+      "he": "סוג הקובץ הזה לא נתמך בגרסה הזו. בחרו קובץ אחר.",
+      "note": "No conversion offered. HEIC/HEVC/HDR fall here."
+    },
+    "import.PROTECTED_AUDIO": {
+      "en": "This song is protected and can't be used. Choose another music file.",
+      "he": "השיר הזה מוגן ואי אפשר להשתמש בו. בחרו קובץ מוזיקה אחר.",
+      "note": "No-blame; no DRM tips."
+    },
+    "import.COPY_FAILED": {
+      "en": "Copying didn't finish. Try again or remove this item.",
+      "he": "ההעתקה לא הושלמה. נסו שוב או הסירו את הפריט."
+    },
+    "import.STORAGE_LOW": {
+      "en": "Not enough space on the phone. Free up space, then try again.",
+      "he": "אין מספיק מקום בטלפון. פנו מקום ונסו שוב."
+    },
+    "import.ITEM_LIMIT": {
+      "en": "Up to 30 photos and videos. Remove {over} to continue.",
+      "he": "עד 30 תמונות וסרטונים. הסירו {over} כדי להמשיך."
+    },
+    "import.SOURCE_SIZE_LIMIT": {
+      "en": "Files add up to more than 1 GiB (including the song). Remove items or choose a smaller file.",
+      "he": "הקבצים מסתכמים ביותר מ־⁨1 GiB⁩ (כולל השיר). הסירו פריטים או בחרו קובץ קטן יותר.",
+      "note": "Cap = 1 GiB (1,024 MiB = 1,073,741,824 bytes) of ALL committed private source copies incl. excluded items and current song. Number+unit isolated as one LTR token."
+    },
+    "import.DURATION_LIMIT": {
+      "en": "The movie would be {duration}. The limit is 1:30. Remove items to continue.",
+      "he": "הסרט יהיה באורך {duration}. המגבלה היא 1:30. הסירו פריטים כדי להמשיך."
+    },
+    "import.SONG_TOO_SHORT": {
+      "en": "The song ({song}) is shorter than the movie ({duration}). Choose a longer song or remove items.",
+      "he": "השיר ({song}) קצר מהסרט ({duration}). בחרו שיר ארוך יותר או הסירו פריטים."
+    },
+    "action.retry": {
+      "en": "Try again",
+      "he": "ניסיון נוסף"
+    },
+    "action.remove": {
+      "en": "Remove",
+      "he": "הסרה"
+    },
+    "action.choose_again": {
+      "en": "Choose again",
+      "he": "בחירה מחדש"
+    },
+    "action.choose_another": {
+      "en": "Choose another file",
+      "he": "בחירת קובץ אחר"
+    },
+    "action.choose_longer_song": {
+      "en": "Choose a longer song",
+      "he": "בחירת שיר ארוך יותר"
+    },
+    "action.remove_items": {
+      "en": "Remove items",
+      "he": "הסרת פריטים"
+    },
+    "action.permission_settings": {
+      "en": "Open settings",
+      "he": "פתיחת ההגדרות",
+      "note": "Only if picker access is blocked; no broad storage permission requested."
+    },
+    "export.PLANNING": {
+      "en": "Planning your movie…",
+      "he": "מתכננים את הסרט…"
+    },
+    "export.READY_TO_CREATE.title": {
+      "en": "Ready to create",
+      "he": "מוכנים ליצירה"
+    },
+    "export.READY_TO_CREATE.duration": {
+      "en": "Movie length: {duration}",
+      "he": "אורך הסרט: {duration}"
+    },
+    "export.READY_TO_CREATE.song_long": {
+      "en": "The song is longer than the movie. The music fades out over the last second; your clips keep their own sound.",
+      "he": "השיר ארוך מהסרט. המוזיקה נחלשת בשנייה האחרונה; הסרטונים שומרים על הצליל שלהם.",
+      "note": "Before Create. End fade = music only."
+    },
+    "export.READY_TO_CREATE.style": {
+      "en": "Birthday style · softer music during marked voices",
+      "he": "סגנון יום הולדת · מוזיקה רכה יותר בקטעים שסומנו",
+      "note": "Use when ≥1 mark."
+    },
+    "export.READY_TO_CREATE.style_nomarks": {
+      "en": "Birthday style · no voice marks",
+      "he": "סגנון יום הולדת · בלי סימון קולות",
+      "note": "Use when 0 marks: clip sound kept, music normal throughout; must not imply softening."
+    },
+    "export.READY_TO_CREATE.foreground": {
+      "en": "Keep EventClip open while it creates. If you leave, you'll need to start again.",
+      "he": "השאירו את EventClip פתוח בזמן היצירה. אם תצאו, תצטרכו להתחיל מחדש."
+    },
+    "export.READY_TO_CREATE.cta": {
+      "en": "Create movie (720p)",
+      "he": "יצירת הסרט (720p)",
+      "note": "720p as LTR isolate."
+    },
+    "export.EXPORTING": {
+      "en": "Creating your movie… {percent}",
+      "he": "יוצרים את הסרט… {percent}",
+      "note": "Truthful progress only; isolate {percent}."
+    },
+    "export.cancel": {
+      "en": "Cancel",
+      "he": "ביטול"
+    },
+    "export.CANCEL_REQUESTED": {
+      "en": "Stopping…",
+      "he": "עוצרים…"
+    },
+    "export.EXPORT_CANCELLED": {
+      "en": "Stopped. Your project is saved. Start again when you're ready.",
+      "he": "נעצר. הפרויקט שמור. אפשר להתחיל מחדש כשתרצו."
+    },
+    "export.EXPORT_INTERRUPTED": {
+      "en": "Creating stopped because EventClip was closed or interrupted. Your project is saved — start again.",
+      "he": "היצירה נעצרה כי EventClip נסגר או הופרע. הפרויקט שמור — התחילו מחדש."
+    },
+    "export.EXPORT_FAILED": {
+      "en": "Something went wrong while creating. Your project is saved. Try again.",
+      "he": "משהו השתבש ביצירה. הפרויקט שמור. נסו שוב."
+    },
+    "export.STORAGE_LOW": {
+      "en": "Not enough space to save the movie. Free up space, then start again.",
+      "he": "אין מספיק מקום לשמירת הסרט. פנו מקום והתחילו מחדש.",
+      "note": "Reuses STORAGE_LOW category at export time; Engineer to confirm code."
+    },
+    "export.restart": {
+      "en": "Start again",
+      "he": "התחלה מחדש",
+      "note": "Never 'Resume'."
+    },
+    "export.previous_kept": {
+      "en": "Your previous movie is still saved.",
+      "he": "הסרט הקודם שלכם עדיין שמור.",
+      "note": "Show only if a prior EXPORT_READY file exists."
+    },
+    "export.EXPORT_READY.title": {
+      "en": "Your movie is ready — watch it",
+      "he": "הסרט מוכן — צפו בו",
+      "note": "Shows the created 720p file ready for review with prominent Play; no auto-start (owner)."
+    },
+    "export.EXPORT_READY.play": {
+      "en": "Play",
+      "he": "ניגון"
+    },
+    "export.EXPORT_READY.share": {
+      "en": "Share…",
+      "he": "שיתוף…"
+    },
+    "export.EXPORT_READY.edit": {
+      "en": "Make changes",
+      "he": "לעשות שינויים"
+    },
+    "share.notice.continue": {
+      "en": "Continue to share",
+      "he": "המשך לשיתוף",
+      "note": "First Share tap for a given file only, inline in the panel (no extra screen); then Android share sheet. Later shares of same file go straight to the sheet."
+    },
+    "voices.keep_this_voice": {
+      "en": "Keep this voice",
+      "he": "לשמור על הקול הזה",
+      "note": "Per-clip entry to start/end marking; softens music only (clip sound is always kept); manual, no detection."
+    },
+    "export.EXPORT_READY.save": {
+      "en": "Save to phone",
+      "he": "שמירה בטלפון"
+    },
+    "save.SAVING": {
+      "en": "Saving to phone…",
+      "he": "שומרים בטלפון…",
+      "note": "ALIGNED with Engineer. needs alignment."
+    },
+    "save.SAVED": {
+      "en": "Saved to Movies › EventClip",
+      "he": "נשמר ב־Movies › EventClip",
+      "note": "ALIGNED. Shown only after MediaStore commit succeeds (Movies/EventClip, API 29+). Path label isolated LTR in HE; deleting the project never deletes this copy."
+    },
+    "save.SAVE_FAILED": {
+      "en": "Couldn't save to the phone. Your movie is still here — try again.",
+      "he": "לא הצלחנו לשמור בטלפון. הסרט עדיין כאן — נסו שוב.",
+      "note": "ALIGNED with Engineer. save failure must not delete created file or project."
+    },
+    "share.cancelled_kept": {
+      "en": "Not shared. Your movie is still here.",
+      "he": "לא שותף. הסרט עדיין כאן.",
+      "note": "Optional toast after share sheet dismissed; file kept."
+    },
+    "song.before_picker": {
+      "en": "Only music files saved on this phone work — not songs inside streaming apps.",
+      "he": "עובדים רק קובצי מוזיקה השמורים בטלפון — לא שירים מתוך אפליקציות סטרימינג.",
+      "note": "Shown before opening the document picker."
+    },
+    "share.info_panel.title": {
+      "en": "Music and sharing",
+      "he": "מוזיקה ושיתוף",
+      "note": "Nonblocking panel on EXPORT_READY screen, shown ONCE per exported file. Final legal copy pending counsel / public-launch approval."
+    },
+    "share.info_panel.body": {
+      "en": "Songs you add may be copyrighted. Having a song file does not give permission to publish it in a video. Public posts may be muted, blocked or removed.",
+      "he": "שירים שמוסיפים לסרטון עשויים להיות מוגנים בזכויות יוצרים. קובץ שיר שיש לכם בטלפון לא נותן רשות לפרסם אותו בסרטון. פרסומים פומביים עלולים להיות מושתקים, חסומים או מוסרים.",
+      "note": "Owner EN wording (private slice). HE adaptation needs native + legal review."
+    },
+    "share.info_panel.dismiss": {
+      "en": "Got it",
+      "he": "הבנתי",
+      "note": "Dismiss only; not consent, not a checkbox."
+    },
+    "share.reminder_link": {
+      "en": "Music and sharing",
+      "he": "מוזיקה ושיתוף",
+      "note": "Persistent small link next to Share; reopens panel text."
+    },
+    "review.include_toggle": {
+      "en": "In the movie",
+      "he": "בסרט",
+      "note": "Switch: Include/Exclude. Excluding keeps the item in the project and does NOT free space toward the cap."
+    },
+    "review.remove_item": {
+      "en": "Remove from this movie project",
+      "he": "הסרה מפרויקט הסרט",
+      "note": "Deletes only EventClip's private copy; never the original in Gallery/Files."
+    },
+    "review.remove_confirm": {
+      "en": "Remove from this project? The original stays in your Gallery.",
+      "he": "להסיר מהפרויקט? המקור נשאר בגלריה שלכם."
+    },
+    "review.space_hint": {
+      "en": "Leaving items out doesn't free space. To free space, remove them from the project.",
+      "he": "השארת פריטים בחוץ לא מפנה מקום. כדי לפנות מקום, הסירו אותם מהפרויקט."
+    },
+    "start.continue": {
+      "en": "Continue your movie",
+      "he": "להמשיך את הסרט",
+      "note": "A01 card when a saved current project exists."
+    },
+    "start.new": {
+      "en": "Start a new movie",
+      "he": "להתחיל סרט חדש"
+    },
+    "start.replace_confirm": {
+      "en": "Replace your current movie project? Your current project stays until the new photos and videos are ready. Movies you saved or shared are kept.",
+      "he": "להחליף את פרויקט הסרט הנוכחי? הפרויקט הנוכחי נשאר עד שהתמונות והסרטונים החדשים יהיו מוכנים. סרטים ששמרתם או שיתפתם נשמרים.",
+      "note": "Owner-settled: one current editable project, no list. Atomic: replace only app-owned source copies after new import commits; cancel/fail keeps current."
+    },
+    "start.replace_keep": {
+      "en": "Keep current",
+      "he": "להשאיר את הנוכחי",
+      "note": "Default-safe action."
+    },
+    "start.replace_confirm_cta": {
+      "en": "Replace project",
+      "he": "להחליף פרויקט"
+    },
+    "song.replacing": {
+      "en": "Checking the new song… Your current song stays until it's ready.",
+      "he": "בודקים את השיר החדש… השיר הנוכחי נשאר עד שהחדש יהיה מוכן.",
+      "note": "Atomic replacement; needs temporary space headroom."
+    },
+    "export.EXPORT_READY.private_note": {
+      "en": "Ready in EventClip. Not saved to your phone yet.",
+      "he": "מוכן ב־EventClip. עדיין לא נשמר בטלפון.",
+      "note": "Private generated export; never claim saved until save.SAVED."
+    },
+    "start.replace_failed": {
+      "en": "Couldn't start the new movie. Your current project is unchanged.",
+      "he": "לא הצלחנו להתחיל את הסרט החדש. הפרויקט הנוכחי לא השתנה.",
+      "note": "Shown on new-import cancel/fail/STORAGE_LOW."
+    },
+    "start.last_movie_kept": {
+      "en": "Your last finished movie is still in EventClip until you delete it.",
+      "he": "הסרט האחרון שסיימתם נשאר ב־EventClip עד שתמחקו אותו.",
+      "note": "Last good private MP4 kept until separate explicit delete."
+    },
+    "movie.delete_private": {
+      "en": "Delete this movie from EventClip",
+      "he": "מחיקת הסרט מ־EventClip",
+      "note": "Separate explicit action; never deletes copies saved to Movies › EventClip or shared."
+    },
+    "movie.delete_private_confirm": {
+      "en": "Delete this movie from EventClip? Copies you saved to your phone stay.",
+      "he": "למחוק את הסרט מ־EventClip? עותקים ששמרתם בטלפון יישארו."
+    },
+    "movie.delete_private_cancel": {
+      "en": "Keep movie",
+      "he": "להשאיר את הסרט"
+    },
+    "export.watermark": {
+      "en": "Made with EventClip",
+      "he": "Made with EventClip",
+      "note": "Baked into video, fixed physical corner, NOT translated/mirrored. Provisional."
+    },
+    "voices.skip_all_helper": {
+      "en": "Clip sound stays on. Music won't soften unless you mark a section.",
+      "he": "הצליל של הסרטונים נשאר. המוזיקה לא תהיה רכה יותר אלא אם תסמנו קטע.",
+      "note": "Under skip-all. With existing marks on re-entry use skip_all_helper_kept."
+    },
+    "voices.skip_all_helper_kept": {
+      "en": "Clip sound stays on. Music softens only in sections you already marked.",
+      "he": "הצליל של הסרטונים נשאר. המוזיקה תהיה רכה יותר רק בקטעים שכבר סימנתם.",
+      "note": "Re-entry with ≥1 mark: skip-all = no NEW marks; existing marks preserved, never reset."
+    },
+    "voices.continue_saved": {
+      "en": "Continue with saved marks",
+      "he": "המשך עם הסימונים השמורים",
+      "note": "Primary CTA when savedValidRanges >= 1. Saved ranges keep softening music; adds no new ranges; clip sound kept. Only per-range Remove changes saved ranges."
+    },
+    "voices.pending_mark": {
+      "en": "You marked a start but no end yet.",
+      "he": "סימנתם התחלה בלי סוף.",
+      "note": "Inline on A08 (no new screen) when a CTA/Back/Next is tapped with a pending start. Pending start is never saved as a range."
+    },
+    "voices.pending_finish": {
+      "en": "Mark the end",
+      "he": "סימון הסוף",
+      "note": "Returns to the clip at the pending start."
+    },
+    "voices.pending_discard": {
+      "en": "Discard this start",
+      "he": "ביטול ההתחלה הזו",
+      "note": "Discards ONLY the pending start; saved ranges untouched."
+    },
+    "playback.unavailable": {
+      "en": "Preview isn’t available in this test build yet.",
+      "he": "התצוגה המקדימה עדיין לא זמינה בגרסת הניסיון הזו.",
+      "note": "Fallback only when playback is actually unavailable/fails to start; no fake player."
+    },
+    "voices.playback_required": {
+      "en": "Voice marking needs working playback. It isn’t available in this test build yet.",
+      "he": "סימון קולות דורש ניגון שעובד. הוא עדיין לא זמין בגרסת הניסיון הזו.",
+      "note": "Mark disabled until playback/native clock wired."
+    },
+    "create.unavailable": {
+      "en": "Creating movies isn’t available in this test build yet.",
+      "he": "יצירת סרטים עדיין לא זמינה בגרסת הניסיון הזו.",
+      "note": "Create disabled; no fake progress."
+    },
+    "import.provider_warning": {
+      "en": "Some files are stored online. Android or the app that keeps the file may need the internet to download it to this phone. EventClip doesn't upload anything. After import finishes, your copies work offline.",
+      "he": "חלק מהקבצים שמורים ברשת. ייתכן שאנדרואיד או האפליקציה שבה הקובץ שמור יצטרכו אינטרנט כדי להוריד אותו לטלפון. EventClip לא מעלה שום דבר. אחרי שהייבוא מסתיים, העותקים שלכם עובדים גם בלי אינטרנט.",
+      "note": "Makes no claim about what the provider transmits; EventClip does no cloud processing."
+    },
+    "review.move_earlier": {
+      "en": "Move earlier",
+      "he": "להזיז מוקדם יותר",
+      "note": "Order is semantic (time), not left/right; TalkBack label 'Move {item} earlier'."
+    },
+    "review.move_later": {
+      "en": "Move later",
+      "he": "להזיז מאוחר יותר",
+      "note": "Semantic order, not direction."
+    },
+    "playback.play": {
+      "en": "Play",
+      "he": "ניגון",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Mirror of export.EXPORT_READY.play for preview/marking players; reuse that key if Engineer prefers one."
+    },
+    "playback.pause": {
+      "en": "Pause",
+      "he": "השהיה",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Toggle with playback.play; TalkBack state follows."
+    },
+    "playback.interrupted": {
+      "en": "Playback stopped. Tap Play to watch again.",
+      "he": "הניגון נעצר. הקישו על ניגון כדי לצפות שוב.",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Preview only (call, app switch, audio focus). Never implies export cancelled; project and marks untouched; manual Play is safe."
+    },
+    "playback.seek_label": {
+      "en": "Movie position, {position} of {duration}",
+      "he": "מיקום בסרט, {position} מתוך {duration}",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Adjustable slider contentDescription/stateDescription. {position},{duration} = Android localized spoken duration (e.g. '1 minute 5 seconds'), not colon timecode; wrap each in FSI/PDI only if numeric, not the sentence. Time semantics, never left/right."
+    },
+    "playback.seek_forward": {
+      "en": "Later in the movie",
+      "he": "בהמשך הסרט",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Accessibility action, time-based. No fixed jump seconds promised; step = Engineer's adjustable increment."
+    },
+    "playback.seek_backward": {
+      "en": "Earlier in the movie",
+      "he": "מוקדם יותר בסרט",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Accessibility action, time-based, not physical direction."
+    },
+    "voices.mark_busy": {
+      "en": "Saving mark…",
+      "he": "שומרים את הסימון…",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Only while a write is outstanding; disables duplicate Mark taps only during it, then re-enables."
+    },
+    "voices.mark_failed": {
+      "en": "Couldn't save this mark. Your saved marks are kept. Try again.",
+      "he": "לא הצלחנו לשמור את הסימון. הסימונים השמורים נשארים. נסו שוב.",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Keeps saved ranges and valid pending start; no autosave, no clearing."
+    },
+    "voices.mark_retry": {
+      "en": "Try again",
+      "he": "לנסות שוב",
+      "note": "PROPOSED key, pending Engineer binding; not implemented. Retries the same mark write only."
+    },
+    "share.failed": {
+      "en": "Couldn't open sharing. Your movie is still in EventClip. Try again.",
+      "he": "לא הצלחנו לפתוח את השיתוף. הסרט עדיין ב־EventClip. נסו שוב.",
+      "note": "Recovery key; private MP4 always kept. Means sharing could not OPEN; says nothing about delivery. Native-sheet dismiss is NOT an error; never claim a recipient received it."
+    },
+    "share.busy": {
+      "en": "Opening sharing…",
+      "he": "פותחים את השיתוף…",
+      "note": "Recovery key; private MP4 always kept. Disables duplicate Share launches only while pending."
+    },
+    "save.cancel_requested": {
+      "en": "Stopping save…",
+      "he": "עוצרים את השמירה…",
+      "note": "Recovery key; private MP4 always kept. No cancel-complete claim before ack; a racing successful commit may still end in save.SAVED."
+    },
+    "save.cancelled": {
+      "en": "Save stopped. Your movie is still in EventClip.",
+      "he": "השמירה נעצרה. הסרט עדיין ב־EventClip.",
+      "note": "Recovery key; private MP4 always kept. Only after confirmed cancellation. Does not claim any public copy was or wasn't removed."
+    },
+    "save.status_unknown": {
+      "en": "We couldn't confirm whether the movie was saved. Check Movies › EventClip on your phone before saving again. Your movie is still in EventClip.",
+      "he": "לא הצלחנו לוודא שהסרט נשמר. בדקו ב־Movies › EventClip בטלפון לפני ששומרים שוב. הסרט עדיין ב־EventClip.",
+      "note": "Recovery key; private MP4 always kept. No success/fail/cancel claim. Reconcile via MediaStore if available; Save disabled until resolved or the user deliberately chooses Save again after checking. 'Movies › EventClip' is a destination label isolated LTR in HE, not a path."
+    },
+    "save.unsupported": {
+      "en": "Saving directly isn't available on this Android version. You can still share your movie.",
+      "he": "שמירה ישירה לא זמינה בגרסת אנדרואיד הזו. אפשר עדיין לשתף את הסרט.",
+      "note": "Recovery key; private MP4 always kept. API < 29 only: direct save path unavailable; Share stays available. Not a video-format error."
+    }
+  },
+  "proposedKeysNeedingEngineerAlignment": [
+    "save.SAVING",
+    "save.SAVED",
+    "save.SAVE_FAILED",
+    "export.STORAGE_LOW"
+  ],
+  "privateSliceShareBehavior": "Save/export never blocked. Info panel once per exported file on EXPORT_READY. First Share per file: inline 'Continue to share' then native sheet; no repeat interstitial for that file. Persistent 'Music and sharing' link. No consent, license claim or checkbox. Supersedes earlier pre-share gate for private slice only.",
+  "engineeringAlignment": {
+    "status": "Engineer alignment Nov 7 2026 — NOT device evidence",
+    "itemCap": "30 retained visual items, excluded included",
+    "sizeCap": "1 GiB (1,024 MiB) of all committed private source copies incl. excluded and current song; thumbnails/exports/temp outside cap but need free-space headroom",
+    "durationCap": "<=90,000,000 µs passes, > blocks; displayed seconds round UP near cap; same plan used for decoded song check",
+    "fit": "Entire frame, letterbox, rotation honored, no crop controls",
+    "save": "MediaStore Movies/EventClip, API 29+, no broad storage; complete only on commit",
+    "songPicker": "Document picker only; no READ_MEDIA_AUDIO",
+    "watermark": "Private 720p slice: provisional small corner 'Made with EventClip', no paywall/removal control. Provisional handoff only, not public/free-tier branding or founder approval. Actual build watermark unverified: Engineer must compare and report differences BEFORE changing. Owner accepted GEOMETRY (handoff §11) as product review, provisional; renderer/device verification pending. Engineer-reported renderer review (Nov 7): cached Media3 1.5.1 supports BitmapOverlay/OverlaySettings with existing fit-before-overlay; geometry feasible, NOT implemented or device-tested. Must convert final displayed anchors through rotation/letterbox and compute tight ink bounds with the Android font at runtime; NEVER hardcode the 180x28 sample. Existing build overlay unchanged. Preview/export parity and phone output still need validation; no pixel-match claim. Acceptance statuses unchanged.",
+    "project": "Owner-settled: one current editable project, no list; atomic replacement; last good private MP4 kept until separate delete; saved/shared copies never deleted; no cleanup racing replacement.",
+    "audioMix": "Owner M06: original-clip bus + music bus summed, then common fixed 0.5 output gain to avoid hard clipping. Relative balance preserved; absolute original loudness is lower. Duck and end fade apply to music BEFORE common gain. No normalization, no new controls. Copy must not promise unchanged original volume.",
+    "buildStatus": "Engineer-reported Nov 7 (update): Preview + native clock WIRED IN CODE (66 JVM / 8 Node / TS / Kotlin checks pass per report), NOT Android-tested; runtime unvalidated. Create STILL DISABLED (create.unavailable). playback.unavailable / voices.playback_required kept as fallbacks for real unavailable failures. Lifecycle, RTL, seeking and audibility acceptance PENDING; canonical statuses unchanged. Not a ready user build. UPDATE: Save/Share/advisory WIRED IN CODE (84 JVM / 12 Node + TS / Kotlin checks pass per report); NOT Android-tested, no user APK. Create remains disabled unless Engineer confirms wiring.",
+    "reusedKeys": "Export interruption reuses canonical export.EXPORT_INTERRUPTED + export.restart (never Resume) + export.previous_kept; no new export interruption key.",
+    "previewContract": "Preview contract (owner, private slice): finished movie is shown ready for review BEFORE Save/Share with a prominent explicit Play; clear Play/Pause; no auto-start, no autoplay setting; never auto-play on screen re-entry or app resume; saved marks/project preserved. Auto-start is NOT an acceptance requirement; full-MVP auto-play reference superseded for this slice. Playback/audio/recovery pending device."
+  },
+  "voiceMarkStateMapping": {
+    "savedValidRanges==0": {
+      "cta": "voices.skip_all",
+      "helper": "voices.skip_all_helper",
+      "style": "export.READY_TO_CREATE.style_nomarks"
+    },
+    "savedValidRanges>=1": {
+      "cta": "voices.continue_saved",
+      "helper": "voices.skip_all_helper_kept",
+      "style": "export.READY_TO_CREATE.style"
+    },
+    "pendingStart": "Block leaving with inline voices.pending_mark + pending_finish / pending_discard; count excludes pending; no silent save of invalid range",
+    "rules": "Only explicit per-range Remove changes saved ranges; no skip-disables flag or hidden preference; original clip audio always kept."
+  }
+}

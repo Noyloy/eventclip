@@ -1,0 +1,14 @@
+{
+  "scope": "Only locally generated analytic color/tone/impulse media; no speech/recordings/personal sources; hash-checked independently before copy",
+  "sha256": {
+    "photo.png": "0e8d19409d0a18452ef47e06da931ca543ca174365584792baf64d594ab9b889",
+    "original-a-44100-mono.mp4": "ac877aad182b37443c0565c38e65b26404d60513fe69c5753730ea94ff8e508a",
+    "silent.mp4": "afe00bb3a9def69854c8b3028891e89ee11afa7cf37422453cc4a79535d7c676",
+    "original-b-48000-stereo.mp4": "c702d072b6c68ce119746ff0117fa9e89f7ce5cc57a59509f226a79b3334f4a4",
+    "music-48000-stereo.wav": "b39fc0362127c7db42c447f333477a59abbddd85fb871890acd3847dbb442975",
+    "original-a-sourcepts-plus2s.mp4": "a95f50d2d1e7f4f6d76159cb9a94373c875f5faecc9e53caf3b93966cc03cab8",
+    "impulses-lame.mp3": "0291dc36292fc798a6eb8d8ce652e16ba684eaf6cf654d57f0ee92886c06e429",
+    "impulses-aac.m4a": "5a9864f7cdfc179711faaa0514944ee22195e3bd8ea5228e934c9a5722c38b41",
+    "impulses-reference.wav": "64809a7105c7b467fbed1993cb720d8d8940115af08cb4d542a11726092e6e52"
+  }
+}

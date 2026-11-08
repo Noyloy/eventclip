@@ -1,0 +1,15 @@
+{
+  "project_id": null,
+  "reviewed_at_jerusalem": null,
+  "spark_plan_verified": false,
+  "billing_disabled_verified": false,
+  "auth_identity_verified": false,
+  "apis_already_enabled_verified": false,
+  "private_default_results_verified": false,
+  "shared_project_quota_remaining_verified": false,
+  "quota_reset_zone_verified": false,
+  "catalog_model_version_locale_verified": false,
+  "artifact_provenance_synthetic_only_verified": false,
+  "matching_apk_signatures_runner_abi_verified": false,
+  "submission_authorized": false
+}

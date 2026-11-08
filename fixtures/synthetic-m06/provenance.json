@@ -1,0 +1,285 @@
+{
+  "origin": "100% local FFmpeg lavfi color/analytic tones; NO speech/personal media/recordings",
+  "proof": "HOST fixture generation only; NOT native decoder/render/audio acceptance",
+  "ffmpegVersion": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "fixtures": [
+    {
+      "file": "photo.png",
+      "sha256": "0e8d19409d0a18452ef47e06da931ca543ca174365584792baf64d594ab9b889",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-y",
+        "-loglevel",
+        "error",
+        "-f",
+        "lavfi",
+        "-i",
+        "color=c=navy:s=320x180",
+        "-frames:v",
+        "1",
+        "photo.png"
+      ],
+      "hostProbeNotAndroidProof": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "png",
+            "codec_type": "video",
+            "width": 320,
+            "height": 180
+          }
+        ],
+        "format": {}
+      }
+    },
+    {
+      "file": "original-a-44100-mono.mp4",
+      "sha256": "ac877aad182b37443c0565c38e65b26404d60513fe69c5753730ea94ff8e508a",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-y",
+        "-loglevel",
+        "error",
+        "-f",
+        "lavfi",
+        "-i",
+        "color=c=yellow:s=320x180:r=30:d=2",
+        "-f",
+        "lavfi",
+        "-i",
+        "aevalsrc=0.28*sin(2*PI*440*t)*(0.7+0.3*sin(2*PI*4*t)):s=44100:d=2",
+        "-c:v",
+        "libx264",
+        "-pix_fmt",
+        "yuv420p",
+        "-bf",
+        "0",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "128k",
+        "-use_editlist",
+        "0",
+        "-shortest",
+        "original-a-44100-mono.mp4"
+      ],
+      "hostProbeNotAndroidProof": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 320,
+            "height": 180,
+            "start_time": "0.000000",
+            "duration": "2.023242"
+          },
+          {
+            "index": 1,
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "sample_rate": "44100",
+            "channels": 1,
+            "start_time": "0.000000",
+            "duration": "2.023220"
+          }
+        ],
+        "format": {
+          "duration": "2.023242"
+        }
+      }
+    },
+    {
+      "file": "silent.mp4",
+      "sha256": "afe00bb3a9def69854c8b3028891e89ee11afa7cf37422453cc4a79535d7c676",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-y",
+        "-loglevel",
+        "error",
+        "-f",
+        "lavfi",
+        "-i",
+        "color=c=gray:s=320x180:r=30:d=1",
+        "-c:v",
+        "libx264",
+        "-pix_fmt",
+        "yuv420p",
+        "-bf",
+        "0",
+        "-an",
+        "silent.mp4"
+      ],
+      "hostProbeNotAndroidProof": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 320,
+            "height": 180,
+            "start_time": "0.000000",
+            "duration": "1.000000"
+          }
+        ],
+        "format": {
+          "duration": "1.000000"
+        }
+      }
+    },
+    {
+      "file": "original-b-48000-stereo.mp4",
+      "sha256": "c702d072b6c68ce119746ff0117fa9e89f7ce5cc57a59509f226a79b3334f4a4",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-y",
+        "-loglevel",
+        "error",
+        "-f",
+        "lavfi",
+        "-i",
+        "color=c=teal:s=180x320:r=30:d=2",
+        "-f",
+        "lavfi",
+        "-i",
+        "aevalsrc=0.28*sin(2*PI*660*t)|0.28*sin(2*PI*660*t):s=48000:d=2",
+        "-c:v",
+        "libx264",
+        "-pix_fmt",
+        "yuv420p",
+        "-bf",
+        "0",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "192k",
+        "-use_editlist",
+        "0",
+        "-shortest",
+        "original-b-48000-stereo.mp4"
+      ],
+      "hostProbeNotAndroidProof": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 180,
+            "height": 320,
+            "start_time": "0.000000",
+            "duration": "2.021354"
+          },
+          {
+            "index": 1,
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 2,
+            "start_time": "0.000000",
+            "duration": "2.021333"
+          }
+        ],
+        "format": {
+          "duration": "2.021354"
+        }
+      }
+    },
+    {
+      "file": "music-48000-stereo.wav",
+      "sha256": "b39fc0362127c7db42c447f333477a59abbddd85fb871890acd3847dbb442975",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-y",
+        "-loglevel",
+        "error",
+        "-f",
+        "lavfi",
+        "-i",
+        "aevalsrc=0.28*sin(2*PI*1000*t)|0.28*sin(2*PI*1000*t):s=48000:d=12",
+        "-c:a",
+        "pcm_s16le",
+        "music-48000-stereo.wav"
+      ],
+      "hostProbeNotAndroidProof": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "pcm_s16le",
+            "codec_type": "audio",
+            "sample_rate": "48000",
+            "channels": 2,
+            "duration": "12.000000"
+          }
+        ],
+        "format": {
+          "duration": "12.000000"
+        }
+      }
+    },
+    {
+      "file": "original-a-sourcepts-plus2s.mp4",
+      "sha256": "a95f50d2d1e7f4f6d76159cb9a94373c875f5faecc9e53caf3b93966cc03cab8",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-y",
+        "-loglevel",
+        "error",
+        "-itsoffset",
+        "2",
+        "-i",
+        "<PROJECT_ROOT>/reports/product-m06-synthetic/original-a-44100-mono.mp4",
+        "-map",
+        "0",
+        "-c",
+        "copy",
+        "-copyts",
+        "-use_editlist",
+        "0",
+        "original-a-sourcepts-plus2s.mp4"
+      ],
+      "hostProbeNotAndroidProof": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 320,
+            "height": 180,
+            "start_time": "0.000000",
+            "duration": "2.023242"
+          },
+          {
+            "index": 1,
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "sample_rate": "44100",
+            "channels": 1,
+            "start_time": "0.000000",
+            "duration": "2.023220"
+          }
+        ],
+        "format": {
+          "duration": "2.023242"
+        }
+      }
+    }
+  ]
+}

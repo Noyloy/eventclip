@@ -1,0 +1,15 @@
+# UNSUBMITTED TEMPLATE: live Galaxy S23 dm1q/API35/en verified; APK placeholders remain.
+instrumentation:
+  type: instrumentation
+  app: /REPLACE/REVIEWED-SYNTHETIC-ONLY-app.apk
+  test: /REPLACE/MATCHING-androidTest.apk
+  device:
+    - model: dm1q
+      version: "35"
+      locale: en
+      orientation: portrait
+  timeout: 180s
+  num-flaky-test-attempts: 0
+  performance-metrics: false
+  auto-google-login: false
+  record-video: true

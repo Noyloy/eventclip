@@ -1,0 +1,17 @@
+{
+  "name": "eventclip-spike-harness",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test:beats": "node --import tsx src/runBeatTests.ts",
+    "test:compose-spec": "node --import tsx src/runComposeSpecTests.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.5",
+    "typescript": "~5.9.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

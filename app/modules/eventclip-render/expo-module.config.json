@@ -1,0 +1,11 @@
+{
+  "platforms": [
+    "android"
+  ],
+  "android": {
+    "modules": [
+      "expo.modules.eventcliprender.EventclipRenderModule",
+      "expo.modules.eventcliprender.realmedia.BirthdayImportsModule"
+    ]
+  }
+}

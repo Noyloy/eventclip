@@ -14,11 +14,11 @@ data class BirthdayProject(val id:String,val assets:List<ImportedAsset>,val keep
 /** Single-writer app-private store. Atomic same-directory rename; journal survives process death.
  * Checkpoints emulate PROCESS death, not device power failure / filesystem durability certification.
  * No directory scans/deletions; only journal-owned IDs are eligible for cleanup. */
-class BirthdayProjectStore(private val root:File,private val checkpoint:(String)->Unit={}) {
-  init {require(root.absoluteFile.normalize()==root.canonicalFile);check(root.mkdirs() || root.isDirectory)}
-  val assetDir=File(root,"assets").also{require(it.absoluteFile==it.canonicalFile);check(it.mkdirs() || it.isDirectory)}
-  private val state=File(root,"project.properties")
-  private val journal=File(root,"transaction.properties")
+class BirthdayProjectStore(requestedRoot:File,private val checkpoint:(String)->Unit={}) {
+  private val root=ProductPrivateFiles.settledDirectory(requestedRoot)
+  val assetDir=ProductPrivateFiles.child(this.root,"assets").also{check(it.mkdirs() || it.isDirectory)}
+  private val state=File(this.root,"project.properties")
+  private val journal=File(this.root,"transaction.properties")
   var pendingCleanup=false
     private set
   var recoveredInterruptedImport=false

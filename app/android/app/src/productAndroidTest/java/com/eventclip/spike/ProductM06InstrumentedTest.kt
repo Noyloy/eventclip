@@ -51,16 +51,23 @@ class ProductM06InstrumentedTest {
   bus.writeWav(File(run.artifacts,if(a==run.originals[0])"original-a-expected-half.wav"else"original-b-expected-half.wav"))
   return EvidencePcm(FloatArray(bus.samples.size){bus.samples[it]/32768f},48000,2,0,0,JSONObject().put("basis","actual product MediaCodec source decode/conversion at relative0.5, NOT actual output"))
  }
- @Test(timeout=170000) fun productTwoBus720p_actualDecodeGate(){renderGate(false)}
- @Test(timeout=170000) fun productNonzeroSourcePts_actualDecodeGate(){renderGate(true)}
- private fun renderGate(shifted:Boolean){val start=SystemClock.elapsedRealtime();val deadline=start+160000;val run=stage(shifted);val report=JSONObject().put("schema","product-m06-native-v1").put("status","RUNNING").put("syntheticOnly",true).put("realSpeech",false).put("diagnosticEngineUsed",false).put("commonGain",0.5).put("manualGaplessTrim",false).put("planDurationUs",run.movie.durationUs)
+ @Test(timeout=600000) fun productTwoBus720p_actualDecodeGate(){renderGate(false)}
+ @Test(timeout=600000) fun productNonzeroSourcePts_actualDecodeGate(){renderGate(true)}
+ private fun renderGate(shifted:Boolean){
+  val start=SystemClock.elapsedRealtime()
+  // Default 120s latch / 160s deadline unchanged for S23. Optional exportTimeoutMs is for slow local software emulators only.
+  val exportTimeoutMs=InstrumentationRegistry.getArguments().getString("exportTimeoutMs")?.toLongOrNull() ?: 120_000L
+  val deadline=start+if(InstrumentationRegistry.getArguments().getString("exportTimeoutMs")==null)160_000L else exportTimeoutMs
+  val run=stage(shifted);val report=JSONObject().put("schema","product-m06-native-v1").put("status","RUNNING").put("syntheticOnly",true).put("realSpeech",false).put("diagnosticEngineUsed",false).put("commonGain",0.5).put("manualGaplessTrim",false).put("planDurationUs",run.movie.durationUs)
   var controller:ProductExportController?=null
   try{
    val a=run.originals[0];val b=run.originals[1];val aSlot=run.movie.items.single{it.id==a.id};val bSlot=run.movie.items.single{it.id==b.id}
    if(shifted)assertTrue("nonzero source video PTS fixture",ProductAudioDecoder.probe(run.store.file(a.id)).videoFirstPtsUs!!>1000000)
    val latch=CountDownLatch(1);var terminal:Map<String,Any?>?=null;val events=JSONArray()
-   instrumentation.runOnMainSync{controller=ProductExportController(run.context){event->synchronized(events){events.put(JSONObject().put("state",event["state"]).put("active",event["active"]).put("reasonCode",event["reasonCode"]))};if(event["active"]==false){terminal=event;latch.countDown()}};assertTrue(controller!!.create(run.project.id,ProductExportPolicy.fingerprint(run.project)))}
-   assertTrue("product export deadline",latch.await(minOf(120000,deadline-SystemClock.elapsedRealtime()),TimeUnit.MILLISECONDS));report.put("events",events).put("terminal",terminal?.get("state")).put("reasonCode",terminal?.get("reasonCode"))
+   instrumentation.runOnMainSync{controller=ProductExportController(run.context){event->synchronized(events){events.put(JSONObject().put("state",event["state"]).put("active",event["active"]).put("reasonCode",event["reasonCode"]).put("phase",event["phase"]).put("error",event["error"]))};if(event["phase"]=="AUDITING"){File(run.context.filesDir,"eventclip-birthday-exports").listFiles()?.filter{it.name.endsWith(".part.mp4")&&it.isFile}?.forEach{it.copyTo(File(run.artifacts,"export-partial.mp4"),overwrite=true)}};if(event["active"]==false){terminal=event;latch.countDown()}};assertTrue(controller!!.create(run.project.id,ProductExportPolicy.fingerprint(run.project)))}
+   assertTrue("product export deadline",latch.await(minOf(exportTimeoutMs,deadline-SystemClock.elapsedRealtime()).coerceAtLeast(1),TimeUnit.MILLISECONDS));report.put("events",events).put("terminal",terminal?.get("state")).put("reasonCode",terminal?.get("reasonCode")).put("error",terminal?.get("error"))
+   val retainedPartial=File(run.artifacts,"export-partial.mp4")
+   if(retainedPartial.isFile){try{val tracks=ProductOutputAudit.inspect(retainedPartial,AtomicBoolean(false));val gap=run.movie.items.maxOf{item->val asset=run.project.assets.single{it.id==item.id};if(asset.kind=="video")ProductOutputAudit.expectedVideoGap(run.store.file(asset.id),AtomicBoolean(false))else 33334L};val row=JSONArray();for(t in tracks)row.put(JSONObject().put("mime",t.mime).put("samples",t.samples).put("firstPtsUs",t.firstPtsUs).put("lastPtsUs",t.lastPtsUs).put("maxGapUs",t.maxGapUs).put("durationUs",t.durationUs).put("monotonic",t.monotonic).put("duplicates",t.duplicates).put("width",t.width).put("height",t.height).put("rotation",t.rotation).put("sampleRate",t.sampleRate).put("channels",t.channels));report.put("retainedPartialBytes",retainedPartial.length()).put("retainedPartialTracks",row).put("expectedVideoGapUs",gap);try{ProductExportPolicy.validate(run.movie.durationUs,tracks,gap);report.put("retainedPartialValidate","PASS")}catch(e:Exception){report.put("retainedPartialValidate",e.message)}}catch(e:Exception){report.put("retainedPartialInspect",e.message)}}
    val rawSource=NativePcmEvidence.decode(run.store.file(a.id),deadline);rawSource.writeFloat(File(run.artifacts,"original-a-raw-codec.f32le"));report.put("sourceARaw",rawSource.format)
    assertEquals("actual product export (gapless rejection is a BLOCK, not pass)","EXPORT_READY",terminal?.get("state"))
    val referenceA=expectedOriginal(run,a);val referenceB=expectedOriginal(run,b)

@@ -108,11 +108,11 @@ android {
         applicationId 'com.eventclip.spike'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode productEntry ? 7 : 5
+        versionCode productEntry ? 9 : 5
         versionName productEntry ? "1.5.1-private" : "1.4.0-diagnostic"
         // Soft-emu is x86_64; phone release packaging overrides to arm64-only below.
         ndk {
-            abiFilters 'arm64-v8a'
+            abiFilters (findProperty('eventclip.abi') ?: 'arm64-v8a')
         }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -137,7 +137,7 @@ android {
         release {
             // Phone/offline APK stays arm64-only (size + device target).
             ndk {
-                abiFilters 'arm64-v8a'
+                abiFilters (findProperty('eventclip.abi') ?: 'arm64-v8a')
             }
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.

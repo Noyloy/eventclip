@@ -4,8 +4,8 @@ import java.util.Properties
 import java.util.UUID
 
 /** Separate from editable project/source cleanup. Pending save journal is the ONLY deletion authority. */
-class ProductDeliveryStore(private val root:File,private val checkpoint:(String)->Unit={}) {
- init{require(root.absoluteFile==root.canonicalFile);check(root.mkdirs()||root.isDirectory)}
+class ProductDeliveryStore(requestedRoot:File,private val checkpoint:(String)->Unit={}) {
+  private val root=ProductPrivateFiles.settledDirectory(requestedRoot)
  private fun child(name:String)=ProductPrivateFiles.child(root,name)
  private val journal get()=child("save-job.properties")
  private fun infoFile(id:String):File{ProductPrivateFiles.id(id);return child("delivery-$id.properties")}

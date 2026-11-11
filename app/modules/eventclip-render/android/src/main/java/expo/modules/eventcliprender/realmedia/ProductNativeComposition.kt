@@ -20,8 +20,7 @@ object ProductNativeComposition {
     val song=project.assets.single{it.kind=="song"};val assets=movie.items.map{item->project.assets.single{it.id==item.id && it.included}}
     require(assets.size==project.assets.count{it.kind!="song" && it.included});require(movie.durationUs<=song.durationUs)
     require((assets+song).all{store.file(it.id).isFile && store.file(it.id).length()==it.bytes}){"PRIVATE_SOURCE_UNREADABLE"}
-    val cache=File(context.cacheDir,"eventclip-birthday-render");require(cache.canonicalFile==cache.absoluteFile);cache.mkdirs()
-    val work=ProductWorkspaces(cache).allocate()
+    val work=ProductWorkspaces(File(context.cacheDir,"eventclip-birthday-render")).allocate()
     try{
       val needed=((movie.durationUs*48000+999999)/1000000)*8+88
       if(work.usableSpace-FoundationPolicy.FREE_RESERVE_BYTES<needed)throw FoundationFailure(ImportCode.STORAGE_LOW)
@@ -55,12 +54,13 @@ object ProductNativeComposition {
       // Visuals have no audio; exactly ONE original and ONE song audio sequence, both already half-gain.
       val composition=Composition.Builder(EditedMediaItemSequence.Builder(visuals).build(),audio(originalFile),audio(musicFile)).setEffects(Effects(emptyList(),listOf(OverlayEffect(listOf(ProductWatermark()))))).setTransmuxAudio(false).build()
       return PreparedProductComposition(composition,work,plan,movie,project.pendingVoiceStart!=null)
-    }catch(e:Exception){ProductWorkspaces(cache).release(work);throw e} // only this newly-created owned UUID work directory
+     }catch(e:Exception){ProductWorkspaces(requireNotNull(work.parentFile)).release(work);throw e} // only this newly-created owned UUID work directory
   }
   fun start(context:Context,prepared:PreparedProductComposition,output:File,listener:Transformer.Listener):Transformer {
     check(Looper.myLooper()==Looper.getMainLooper());require(!prepared.hasPendingVoiceStart);require(!output.exists())
     // Controller holds the lease THROUGH audit/atomic retention. Default mux delay21000ms unchanged.
-    val transformer=Transformer.Builder(context).setAudioMimeType(MimeTypes.AUDIO_AAC).setVideoMimeType(MimeTypes.VIDEO_H264).addListener(listener).build()
+    // Media3 default encodes portrait as landscape plus rotation; audit requires 720 by 1280 rotation 0.
+    val transformer=Transformer.Builder(context).setAudioMimeType(MimeTypes.AUDIO_AAC).setVideoMimeType(MimeTypes.VIDEO_H264).setPortraitEncodingEnabled(true).setEncoderFactory(ProductEncoderFactory(context)).addListener(listener).build()
     transformer.start(prepared.composition,output.absolutePath);return transformer
   }
 }

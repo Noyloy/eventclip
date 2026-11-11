@@ -5,8 +5,8 @@ import java.util.Properties
 import java.util.UUID
 
 /** Serialized journal. Public saved files/project source tree are never addressed here. */
-class ProductExportStore(private val root:File,private val checkpoint:(String)->Unit={}) {
- init{require(root.absoluteFile==root.canonicalFile);check(root.mkdirs()||root.isDirectory)}
+class ProductExportStore(requestedRoot:File,private val checkpoint:(String)->Unit={}) {
+  private val root=ProductPrivateFiles.settledDirectory(requestedRoot)
  private fun child(name:String)=ProductPrivateFiles.child(root,name)
  private val journal get()=child("export-job.properties")
  private fun write(p:Properties)=ProductPrivateFiles.atomic(journal,p)

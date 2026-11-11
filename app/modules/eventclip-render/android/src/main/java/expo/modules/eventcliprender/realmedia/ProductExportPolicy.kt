@@ -12,13 +12,16 @@ object ProductExportPolicy {
  fun movie(store:BirthdayProjectStore,p:BirthdayProject):MoviePlan {require(p.pendingVoiceStart==null){"INCOMPLETE_VOICE_RANGE"};require(p.assets.count{it.kind!="song"}<=30);var remaining=FoundationPolicy.MAX_SOURCE_BYTES;for(a in p.assets){require(a.bytes in 1..remaining);remaining-=a.bytes};val song=p.assets.single{it.kind=="song"};return FoundationPolicy.plan(store.ordered(p).filter{it.kind!="song"}.map{VisualInput(it.id,it.kind,it.durationUs,it.included)},song.durationUs,emptyList())}
  fun neededBytes(durationUs:Long):Long {require(durationUs in 1..FoundationPolicy.MAX_MOVIE_US);val pcm=((durationUs*48000+999999)/1000000)*8+88;val output=((durationUs+999999)/1000000)*2_000_000L;return pcm+output+FoundationPolicy.FREE_RESERVE_BYTES} // conservative16Mbps output budget, not measured bitrate
  fun validate(durationUs:Long,tracks:List<ProductTrackSummary>,videoGapUs:Long) {
-  require(durationUs in 1..FoundationPolicy.MAX_MOVIE_US && tracks.size==2)
+  require(durationUs in 1..FoundationPolicy.MAX_MOVIE_US && tracks.size==2){"OUTPUT_TRACK_COUNT"}
   val v=tracks.single{it.mime=="video/avc"};val a=tracks.single{it.mime=="audio/mp4a-latm"}
-  require(v.width==720 && v.height==1280 && v.rotation==0);require(a.sampleRate==48000 && a.channels==2)
+  require(v.width==720 && v.height==1280 && v.rotation==0){"OUTPUT_VIDEO_GEOMETRY"}
+  require(a.sampleRate==48000 && a.channels==2){"OUTPUT_AUDIO_FORMAT"}
   for(t in tracks){val audio=t===a;val gap=if(audio)24000L else maxOf(33334L,videoGapUs)+2000L;val tolerance=if(audio)50000L else gap+33334L
-   require(t.samples in 1..100000 && t.monotonic && t.duplicates==0 && t.firstPtsUs in 0..tolerance && t.maxGapUs<=gap)
-   require(abs(t.durationUs-durationUs)<=tolerance && t.lastPtsUs<=durationUs+tolerance && t.lastPtsUs>=durationUs-tolerance)
-   require(t.samples>=maxOf(1L,(durationUs-tolerance)/gap))
+   require(t.samples in 1..100000 && t.monotonic && t.duplicates==0){"OUTPUT_SAMPLE_INTEGRITY"}
+   require(t.firstPtsUs in 0..tolerance){"OUTPUT_FIRST_PTS"}
+   require(t.maxGapUs<=gap){"OUTPUT_MAX_GAP"}
+   require(abs(t.durationUs-durationUs)<=tolerance && t.lastPtsUs<=durationUs+tolerance && t.lastPtsUs>=durationUs-tolerance){"OUTPUT_DURATION"}
+   require(t.samples>=maxOf(1L,(durationUs-tolerance)/gap)){"OUTPUT_SAMPLE_COUNT"}
   }
  }
 }

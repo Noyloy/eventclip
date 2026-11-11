@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /** Compressed sample metadata ONLY. Does not decode or prove audibility, pixels, true peak or complete codec frames. */
 object ProductOutputAudit {
  fun inspect(file:File,cancelled:AtomicBoolean):List<ProductTrackSummary> {
-  val probe=MediaExtractor();val count=try{probe.setDataSource(file.absolutePath);probe.trackCount}finally{probe.release()};require(count==2)
+  val probe=MediaExtractor();val count=try{probe.setDataSource(file.absolutePath);probe.trackCount}finally{probe.release()};require(count==2){"OUTPUT_TRACK_COUNT"}
   return (0 until count).map{scan(file,it,cancelled)}
  }
  private fun scan(file:File,index:Int,cancelled:AtomicBoolean):ProductTrackSummary {

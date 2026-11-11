@@ -1,4 +1,19 @@
-> Latest public status: The initial S23 execution failed before any case because the runner could not load a shared dependency. After the packaging fix, a second S23 execution started one test case, then failed in BirthdayProjectStore construction before product rendering. This confirms runner startup progressed on-device; the constructor failure root cause is not established here. Product audio/video acceptance remains unproved. No raw result artifacts or private execution identifiers are published. Historical entries below describe their preparation-time evidence, not a later successful render.
+> Latest public status: HELD vc9 is the current product APK pair. Official S23 selected-method instrumentation reached EXPORT_READY at 720×1280 rotation 0 and passed the unchanged native decode-gate thresholds (lag 0 ms, original-voice ratios about 1.007 / 0.993, final 0.996, correlation about 0.99983, all windows in range). That closes BUG-002 (filesDir alias and portrait geometry, already confirmed on S23 in vc8) and BUG-003 (unsignaled AAC-LC priming lag of 40 ms on vc8). Product APKs remain HELD. This is not listening, visual, Save, or Share acceptance. No raw result artifacts or private execution identifiers are published. Historical entries below describe their preparation-time evidence and earlier failures.
+
+# Latest — BUG-002 filesDir alias and portrait geometry, BUG-003 AAC priming, HELD vc9 (2026-11-11 13:30 Asia/Jerusalem)
+
+Official S23 selected-method run of HELD vc9 passed the synthetic native decode gate with thresholds unchanged. This supersedes the earlier open BUG-002 constructor failure and the vc8 decode-gate lag only; it is not Owner listening or visual acceptance, and not Save/Share verification.
+
+- Product `reports/vc9/EventClipSpike-offline-arm64-vc9-v1.5.1-private-HELD.apk`; 13,349,135 bytes; SHA256 `c9c2a58f457f90005273458d9992bdba766c4500dc4d6cd672dda60a61fba51c`.
+- Matching RELEASE test `reports/vc9/EventClipSpike-arm64-vc9-release-androidTest-HELD.apk`; 2,952,455 bytes; SHA256 `bd6d0dfb9d2cf87d165b7a9a97a07a185819c9444c88b2fef66f7f3793941d5e` (identical to the vc8 test APK).
+- Both public cert SHA256 `fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c` matches vc5–vc8; package com.eventclip.spike, arm64 only.
+- BUG-002: official filesDir/cacheDir alias (`/data/user/0` vs `/data/data`) is settled to a canonical package-private root; later child/symlink/`..` guards stay strict. Media3 portrait encoding is enabled so output is 720×1280 rotation 0, not landscape plus rotation 90.
+- BUG-003: unsignaled AAC-LC encoder priming (~2048 samples) is padded through EOS, dropped from the muxed stream, and PTS rebased to 0. Output delay/padding stay 0; source gapless rejection of nonzero delay/padding is unchanged, as are the 21,000 ms mux watchdog and common postmix 0.5.
+- Official S23 selected-method result: EXPORT_READY, 720×1280 rotation 0, lag 0 ms (was 40 on vc8), unmarked 1.007, marked 0.993, final 0.996, correlation 0.99983, all windows in range.
+- A local software emulator had already passed the same official thresholds after the vc9 fix. Static permission/signature/target/linkage audits of the HELD pair passed; lint remains NOT RUN under existing offline exclusions. No raw Test Lab artifacts or private execution identifiers are published. LaunchOps `<PROJECT_ROOT>/release/builds/vc9.md`.
+
+---
+
 
 # Latest — BUG-001 startup packaging fix, HELD vc7 r2 (2026-11-07 10:12 Asia/Jerusalem)
 

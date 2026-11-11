@@ -15,7 +15,7 @@ class ProductExportController(context:Context,private val emit:(Map<String,Any?>
  private class Job(val lease:String) {
   val cancelled=AtomicBoolean(false);val finalized=AtomicBoolean(false)
   @Volatile var id:String?=null;@Volatile var prepared:PreparedProductComposition?=null
-  @Volatile var stopState="EXPORT_CANCELLED";@Volatile var reasonCode="";var transformer:Transformer?=null
+  @Volatile var stopState="EXPORT_CANCELLED";@Volatile var reasonCode="";@Volatile var error:String?=null;var transformer:Transformer?=null
   @Volatile var stage="PREPARING"
  }
  @Volatile private var active:Job?=null
@@ -45,13 +45,14 @@ class ProductExportController(context:Context,private val emit:(Map<String,Any?>
       override fun onCompleted(composition:Composition,exportResult:ExportResult){if(active!==j||j.finalized.get())return;j.transformer=null;j.stage="AUDITING";main.removeCallbacks(tick);emit(mapOf("state" to "EXPORTING","active" to true,"progressPercent" to null,"phase" to "AUDITING","sampleCount" to null,"outBytes" to o.partial(requireNotNull(j.id)).length()))
        ProductWork.executor.execute{try{val id=requireNotNull(j.id);val tracks=ProductOutputAudit.inspect(o.partial(id),j.cancelled);if(j.cancelled.get())throw ExportStopped();o.publish(id,tracks,gap){j.cancelled.get()};finish(j,"EXPORT_READY",exportResult.videoFrameCount)}catch(e:Exception){finish(j,errorState(j,e))}}
       }
-      override fun onError(composition:Composition,exportResult:ExportResult,exportException:ExportException){j.transformer=null;finish(j,if(j.cancelled.get())j.stopState else "EXPORT_FAILED")}
+      override fun onError(composition:Composition,exportResult:ExportResult,exportException:ExportException){j.transformer=null;if(!j.cancelled.get()){j.reasonCode="EXPORT_FAILED";j.error=listOfNotNull(exportException.errorCodeName,exportException.message,exportException.cause?.message).joinToString(":")};finish(j,if(j.cancelled.get())j.stopState else "EXPORT_FAILED")}
      });main.post(tick)}catch(_:Exception){finish(j,if(j.cancelled.get())j.stopState else "EXPORT_FAILED")}
     }
    }catch(e:Exception){finish(j,errorState(j,e))}
   };return true
  }
  private fun errorState(j:Job,e:Exception):String {
+  j.error=e.message
   j.reasonCode=when{e is FoundationFailure->e.code.name;e.message=="AUDIO_GAPLESS_METADATA_UNSUPPORTED"->"UNSUPPORTED_MEDIA";e.message=="PROJECT_CHANGED"->"PROJECT_CHANGED";e.message=="SOURCE_UNREADABLE"->"ACCESS_UNREADABLE";else->"EXPORT_FAILED"}
   return if(j.cancelled.get()||e is ExportStopped)j.stopState else if(e is FoundationFailure&&e.code==ImportCode.STORAGE_LOW)"STORAGE_LOW"else "EXPORT_FAILED"
  }
@@ -71,7 +72,7 @@ class ProductExportController(context:Context,private val emit:(Map<String,Any?>
    var finalState=state
    try{val o=outputs();j.id?.let{if(state!="EXPORT_READY")o.stop(it,state)};j.prepared?.let{workspaces().release(it.workingDirectory)}
     if(j.id!=null)finalState=o.status()?.getProperty("state")?:state
-    val result=mapOf("state" to finalState,"active" to false,"lastGood" to latest(o.latest()),"decodeVerified" to false,"renderedVideoFrameCount" to frames,"reasonCode" to j.reasonCode)
+    val result=mapOf("state" to finalState,"active" to false,"lastGood" to latest(o.latest()),"decodeVerified" to false,"renderedVideoFrameCount" to frames,"reasonCode" to j.reasonCode,"error" to j.error)
     main.post{if(active===j){active=null;main.removeCallbacks(tick);ProductWork.release(j.lease);emit(result)}}
    }catch(_:Exception){main.post{if(active===j){active=null;main.removeCallbacks(tick);ProductWork.release(j.lease);emit(mapOf("state" to "EXPORT_FAILED","active" to false,"cleanupPending" to true))}}}
   }

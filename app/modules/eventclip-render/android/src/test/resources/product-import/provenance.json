@@ -1,0 +1,50 @@
+{
+  "scope": "Synthetic stills only; no personal media; no GPS/device/camera EXIF (Orientation only). heic/avif ftyp files are sniff fixtures, not complete decodable images. The ISO-BMFF MP4 ftyp contrast case is generated in the unit test so a raw .mp4 fixture is not published.",
+  "fixtures": [
+    {
+      "file": "sdr-48x32.jpg",
+      "bytes": 742,
+      "sha256": "6156b49467dc9ff11472bfb148bf469ecb2584ed798de53e97d024a2eb041840"
+    },
+    {
+      "file": "exif-orient6-48x32.jpg",
+      "bytes": 742,
+      "sha256": "e37f6bb340b30e71827258ed2a552d678abb536b0a039013977cba3943802a1d"
+    },
+    {
+      "file": "motion-photo-style.jpg",
+      "bytes": 790,
+      "sha256": "fe39d77b5ca1e63e13810b7481445cf7c444a55f110f277b52ec20d83c286ab0"
+    },
+    {
+      "file": "sdr-48x32.png",
+      "bytes": 134,
+      "sha256": "f9fa1a7484783efcb10110978aee3c3737290e44d00cd78d72597a577d6df440"
+    },
+    {
+      "file": "sdr-48x32.webp",
+      "bytes": 126,
+      "sha256": "4f92deacf054694062e02dc6482f167d77611518cd8c108efbbc99cc11c4cc05"
+    },
+    {
+      "file": "heic-ftyp-only.heic",
+      "bytes": 44,
+      "sha256": "b69bb9b8b9a475aefe5372a024936e792a85edf0f8e13b73a91659514a057469"
+    },
+    {
+      "file": "avif-ftyp-only.avif",
+      "bytes": 44,
+      "sha256": "77cefbf575bc0ca96dedc607239ff41464b3586bdf5b526f91f454c0b3ec8711"
+    },
+    {
+      "file": "sdr-320x180.jpg",
+      "bytes": 1695,
+      "sha256": "9c705fc911c71d992ac09fc4d9aeb9bf83a7b0057291f450591333b08525fe85"
+    },
+    {
+      "file": "exif-orient6-320x180.jpg",
+      "bytes": 1695,
+      "sha256": "a2f5f1cafe66960b934ffd9d4147a3439d116d4e7628a1490426180867a0c93b"
+    }
+  ]
+}

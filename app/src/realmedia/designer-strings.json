@@ -11,6 +11,7 @@
       "IMPORT_CANCELLED",
       "ACCESS_UNREADABLE",
       "UNSUPPORTED_MEDIA",
+      "HEIC_UNSUPPORTED",
       "PROTECTED_AUDIO",
       "COPY_FAILED",
       "STORAGE_LOW",
@@ -156,7 +157,12 @@
     "import.UNSUPPORTED_MEDIA": {
       "en": "This file type isn't supported yet in this build. Choose another file.",
       "he": "סוג הקובץ הזה לא נתמך בגרסה הזו. בחרו קובץ אחר.",
-      "note": "No conversion offered. HEIC/HEVC/HDR fall here."
+      "note": "Unknown or non-still types, and HEVC video, fall here. HEIF/AVIF decode failure uses import.HEIC_UNSUPPORTED. HDR/Ultra HDR and other stills are transcoded to sRGB SDR JPEG on import when needed."
+    },
+    "import.HEIC_UNSUPPORTED": {
+      "en": "This device can't read this HEIF photo. Choose a JPEG or PNG, or try another photo.",
+      "he": "לא ניתן לקרוא את תמונת ה-HEIF במכשיר הזה. בחרו קובץ JPEG או PNG, או תמונה אחרת.",
+      "note": "Used only when a HEIF/AVIF still is recognized but the platform ImageDecoder is missing or fails. Not for HEVC video."
     },
     "import.PROTECTED_AUDIO": {
       "en": "This song is protected and can't be used. Choose another music file.",

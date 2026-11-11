@@ -7,8 +7,6 @@ import android.provider.OpenableColumns
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaCodecList
-import android.graphics.BitmapFactory
-import android.os.Build
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
@@ -16,36 +14,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 class BirthdayImporter(private val context:Context, private val store:BirthdayProjectStore) {
   val cancelled=AtomicBoolean(false)
   private fun metadata(file:File,kind:String,id:String,bytes:Long,captured:Long):ImportedAsset {
-    if(kind=="visual") {
-      val head=file.inputStream().use{val b=ByteArray(32);it.read(b);b}
-      val png=head[0]==0x89.toByte() && head[1]==0x50.toByte()
-      val jpeg=head[0]==0xff.toByte() && head[1]==0xd8.toByte()
-      if(png || jpeg) {
-        if(png && head[24].toInt()!=8)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
-        val o=BitmapFactory.Options().apply{inJustDecodeBounds=true};BitmapFactory.decodeFile(file.absolutePath,o)
-        if(o.outWidth<=0 || o.outHeight<=0)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
-        val sample=BitmapFactory.Options().apply{inSampleSize=maxOf(1,maxOf(o.outWidth,o.outHeight)/256)}
-        val bmp=BitmapFactory.decodeFile(file.absolutePath,sample) ?: throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
-        try {
-          if(Build.VERSION.SDK_INT>=34 && bmp.hasGainmap())throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
-          // Conservative initial target: sRGB SDR only; no silent tone mapping.
-          if(Build.VERSION.SDK_INT>=26 && bmp.colorSpace?.isSrgb==false)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
-        } finally {bmp.recycle()}
-        var rotation=0
-        if(jpeg)try {
-          val ex=android.media.ExifInterface(file.absolutePath)
-          val orientation=ex.getAttributeInt(android.media.ExifInterface.TAG_ORIENTATION,1)
-          rotation=when(orientation){6->90;3->180;8->270;1->0;else->throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)}
-        }catch(e:FoundationFailure){throw e}catch(_:Exception){}
-        return ImportedAsset(id,"image",bytes,if(png)"image/png"else"image/jpeg",0,o.outWidth,o.outHeight,rotation,captured)
-      }
+    val sniff=ProductImageSniff.of(file)
+    if(kind=="visual" && sniff.stillImage){
+      val still=ProductImageImport.normalize(file,sniff)
+      return ImportedAsset(id,"image",still.bytes,still.mime,0,still.width,still.height,still.rotation,captured)
     }
-    val signature=file.inputStream().use{val b=ByteArray(12);it.read(b);b}
-    val mp4=String(signature,4,4,Charsets.US_ASCII)=="ftyp"
-    val wav=String(signature,0,4,Charsets.US_ASCII)=="RIFF" && String(signature,8,4,Charsets.US_ASCII)=="WAVE"
-    val mp3=String(signature,0,3,Charsets.US_ASCII)=="ID3" || (signature[0]==0xff.toByte() && (signature[1].toInt() and 0xe0)==0xe0)
-    if(kind=="visual" && !mp4)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
-    if(kind=="song" && !mp4 && !wav && !mp3)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
+    if(kind=="visual" && sniff.kind!=SniffedMedia.MP4)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
+    if(kind=="song" && sniff.kind!=SniffedMedia.MP4 && sniff.kind!=SniffedMedia.WAV && sniff.kind!=SniffedMedia.MP3)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
     val ex=MediaExtractor()
     try {
       ex.setDataSource(file.absolutePath)

@@ -5,8 +5,8 @@ import os,hashlib,json,re,subprocess,zipfile,sys
 r=Path(__file__).resolve().parents[1];tools=Path(os.environ.get('ANDROID_HOME',str(r/'.tools/android-sdk')))/'build-tools/37.0.0'
 app,test=map(Path,sys.argv[1:3]);vc5=r/'reports/EventClipSpike-offline-arm64-vc5-v1.4.0-diagnostic-HELD-final.apk'
 tag=sys.argv[3] if len(sys.argv)>3 else 'vc6'
-assert tag in ['vc6','vc7','vc8','vc9','vc10']
-code,version={'vc6':('6','1.5.0-private'),'vc7':('7','1.5.1-private'),'vc8':('8','1.5.1-private'),'vc9':('9','1.5.1-private'),'vc10':('10','1.5.1-private')}[tag]
+assert tag in ['vc6','vc7','vc8','vc9','vc10','vc11','vc12','vc13']
+code,version={'vc6':('6','1.5.0-private'),'vc7':('7','1.5.1-private'),'vc8':('8','1.5.1-private'),'vc9':('9','1.5.1-private'),'vc10':('10','1.5.1-private'),'vc11':('11','1.5.1-private'),'vc12':('12','1.5.1-private'),'vc13':('13','1.5.1-private')}[tag]
 def run(*args):return subprocess.check_output([str(a) for a in args],text=True)
 def identity(p):
  badging=run(tools/'aapt','dump','badging',p);cert=run(tools/'apksigner','verify','--print-certs',p)

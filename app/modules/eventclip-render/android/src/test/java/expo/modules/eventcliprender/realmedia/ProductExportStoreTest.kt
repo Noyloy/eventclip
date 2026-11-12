@@ -17,6 +17,19 @@ class ProductExportStoreTest {
  @Test fun tamperedRetainedHashFailsClosed(){val r=root();try{val s=ProductExportStore(r);val id=s.begin(project,hash,4000000);s.partial(id).writeText("synthetic-not-mp4");s.publish(id,tracks,33334){false};s.retained(id).writeText("different");rejects{s.verifiedFile(id)}}finally{r.deleteRecursively()}}
  @Test fun auditRejectsTruncationGapsWrongTracksAndDimensionsNotDecodeProof(){ProductExportPolicy.validate(4000000,tracks,33334);for(bad in listOf(tracks.take(1),tracks.map{if(it.mime.startsWith("video"))it.copy(height=720)else it},tracks.map{if(it.mime.startsWith("video"))it.copy(width=1280,height=720,rotation=90)else it},tracks.map{it.copy(lastPtsUs=2000000)},tracks.map{it.copy(maxGapUs=1000000)},tracks.map{it.copy(duplicates=1)}))rejects{ProductExportPolicy.validate(4000000,bad,33334)}}
  @Test fun workspaceRecoveryOnlyRegisteredFilesAndNoSymlinkTraversal(){val r=root();try{val s=ProductWorkspaces(r);val dir=s.allocate();File(dir,"original.wav").writeText("private temp");val unrelated=File(r,"unknown").apply{mkdir()};File(unrelated,"original.wav").writeText("keep");s.recover();assertFalse(dir.exists());assertTrue(File(unrelated,"original.wav").exists());val next=s.allocate();val keep=File(next,"unrelated").apply{writeText("keep")};try{s.recover();fail()}catch(_:IllegalStateException){};assertTrue(keep.exists());val outside=Files.createTempDirectory("outside").toFile();try{val wav=File(next,"original.wav");Files.createSymbolicLink(wav.toPath(),File(outside,"original.wav").apply{writeText("keep")}.toPath());rejects{s.recover()};assertTrue(File(outside,"original.wav").exists());wav.delete()}finally{outside.deleteRecursively()}}finally{r.deleteRecursively()}}
+ @Test fun workspaceReleaseDeletesRegisteredExportStillsAndKeepsUnexpectedChildrenGuarded(){
+  val r=root();try{
+   val s=ProductWorkspaces(r);val dir=s.allocate()
+   File(dir,"original.wav").writeText("pcm");File(dir,"music.wav").writeText("pcm")
+   val still=File(dir,UUID.randomUUID().toString()+".export.jpg").apply{writeText("still")}
+   s.release(dir);assertFalse(dir.exists());assertFalse(still.exists())
+   val next=s.allocate();File(next,"original.wav").writeText("pcm")
+   File(next,UUID.randomUUID().toString()+".export.jpg").writeText("still")
+   File(next,"stray.bin").writeText("keep")
+   try{s.release(next);fail("unexpected child must not be recursively deleted")}catch(_:IllegalStateException){}
+   assertTrue(File(next,"stray.bin").exists())
+  }finally{r.deleteRecursively()}
+ }
  @Test fun watermarkMetricsGeometryPortraitLandscapeRotationAndLetterbox(){val l=ProductWatermarkGeometry.box(1280,720,164,18);assertEquals(1076,l.x);assertEquals(668,l.y);assertEquals(18,l.fontPx);val p=ProductWatermarkGeometry.box(720,1280,164,18);assertEquals(516,p.x);assertEquals(1228,p.y);assertEquals(720 to 1280,ProductWatermarkGeometry.displayed(1280,720,90));val fit=ProductWatermarkGeometry.fitted(1280,720,0,720,1280);assertEquals(720.0,fit.first,0.0);assertEquals(405.0,fit.second,0.0);assertTrue(p.y> (1280+fit.second)/2);assertEquals(24,ProductWatermarkGeometry.box(720,1280,150,21).inset);assertEquals(194,ProductWatermarkGeometry.box(720,1280,178,21).width)}
  @Test fun exactPlanFingerprintAndHeadroomAreBounded(){val p=BirthdayProject(project,emptyList());assertEquals(ProductExportPolicy.fingerprint(p),ProductExportPolicy.fingerprint(p.copy()));assertNotEquals(ProductExportPolicy.fingerprint(p),ProductExportPolicy.fingerprint(p.copy(keepDateOrder=false)));assertTrue(ProductExportPolicy.neededBytes(90000000)>180000000);rejects{ProductExportPolicy.neededBytes(90000001)};rejects{ProductExportPolicy.neededBytes(0)}}
 }

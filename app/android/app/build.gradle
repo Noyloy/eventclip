@@ -108,7 +108,7 @@ android {
         applicationId 'com.eventclip.spike'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode productEntry ? 10 : 5
+        versionCode productEntry ? 13 : 5
         versionName productEntry ? "1.5.1-private" : "1.4.0-diagnostic"
         // Soft-emu is x86_64; phone release packaging overrides to arm64-only below.
         ndk {

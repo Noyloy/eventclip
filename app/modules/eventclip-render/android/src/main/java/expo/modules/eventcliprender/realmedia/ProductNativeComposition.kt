@@ -45,7 +45,10 @@ object ProductNativeComposition {
       if(cancelled.get())throw FoundationFailure(ImportCode.IMPORT_CANCELLED)
       val fit=Presentation.createForWidthAndHeight(720,1280,Presentation.LAYOUT_SCALE_TO_FIT)
       val visuals=movie.items.zip(assets).map{(item,a)->
-        val builder=MediaItem.Builder().setUri(store.file(a.id).toURI().toString()).setMimeType(if(a.kind=="image")a.mime else MimeTypes.VIDEO_MP4)
+        // Flatten stills to a baseline 1280-edge sRGB JPEG in the workspace so Transformer never sees
+        // leftover Ultra HDR / motion-photo trailers / HEIF / 12MP camera stills the importer may keep.
+        val source=if(a.kind=="image")ProductImageImport.exportStill(store.file(a.id),File(work,"${item.id}.export.jpg")) else store.file(a.id)
+        val builder=MediaItem.Builder().setUri(source.toURI().toString()).setMimeType(if(a.kind=="image")MimeTypes.IMAGE_JPEG else MimeTypes.VIDEO_MP4)
         if(a.kind=="image")builder.setImageDurationMs((item.durationUs+999)/1000)
         else require(item.durationUs==a.durationUs){"WHOLE_VIDEO_DURATION_MISMATCH"}
         EditedMediaItem.Builder(builder.build()).setRemoveAudio(true).setDurationUs(item.durationUs).setFrameRate(30).setEffects(Effects(emptyList(),listOf(fit))).build()
@@ -57,10 +60,11 @@ object ProductNativeComposition {
      }catch(e:Exception){ProductWorkspaces(requireNotNull(work.parentFile)).release(work);throw e} // only this newly-created owned UUID work directory
   }
   fun start(context:Context,prepared:PreparedProductComposition,output:File,listener:Transformer.Listener):Transformer {
-    check(Looper.myLooper()==Looper.getMainLooper());require(!prepared.hasPendingVoiceStart);require(!output.exists())
-    // Controller holds the lease THROUGH audit/atomic retention. Default mux delay21000ms unchanged.
+    check(Looper.myLooper()==Looper.getMainLooper()){"EXPORT_START_NOT_ON_MAIN"};require(!prepared.hasPendingVoiceStart){"PENDING_VOICE_START"};require(!output.exists()){"OUTPUT_ALREADY_EXISTS"}
+    // Controller holds the lease THROUGH audit/atomic retention.
+    // Mux watchdog is the Media3 21s no-sample stall detector (not a total elapsed timeout). See ProductMuxWatchdog.
     // Media3 default encodes portrait as landscape plus rotation; audit requires 720 by 1280 rotation 0.
-    val transformer=Transformer.Builder(context).setAudioMimeType(MimeTypes.AUDIO_AAC).setVideoMimeType(MimeTypes.VIDEO_H264).setPortraitEncodingEnabled(true).setEncoderFactory(ProductEncoderFactory(context)).addListener(listener).build()
+    val transformer=ProductMuxWatchdog.apply(Transformer.Builder(context).setAudioMimeType(MimeTypes.AUDIO_AAC).setVideoMimeType(MimeTypes.VIDEO_H264).setPortraitEncodingEnabled(true).setEncoderFactory(ProductEncoderFactory(context)).addListener(listener)).build()
     transformer.start(prepared.composition,output.absolutePath);return transformer
   }
 }

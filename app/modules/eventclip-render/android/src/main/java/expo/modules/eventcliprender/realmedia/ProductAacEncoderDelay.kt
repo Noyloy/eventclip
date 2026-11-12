@@ -49,9 +49,10 @@ internal class ProductAacDelayCodec(private val delegate:Codec,request:Format):C
  private var delayUs=ProductAacEncoderDelay.delayUs(delaySamples,sampleRate)
  private var droppedSamples=0
  private var padded=false
+ private var remainingPad=-1
+ private var padStartUs=C.TIME_UNSET
  private var haveAdjusted=false
  private val adjusted=MediaCodec.BufferInfo()
- private val padBuffer=DecoderInputBuffer(DecoderInputBuffer.BUFFER_REPLACEMENT_MODE_DISABLED)
  private fun adoptDelay(signaled:Int){if(signaled>0&&signaled!=delaySamples){delaySamples=signaled;delayUs=ProductAacEncoderDelay.delayUs(delaySamples,sampleRate)}}
  override fun getConfigurationFormat()=delegate.configurationFormat
  override fun getName()=delegate.name
@@ -60,31 +61,36 @@ internal class ProductAacDelayCodec(private val delegate:Codec,request:Format):C
  override fun maybeDequeueInputBuffer(buffer:DecoderInputBuffer)=delegate.maybeDequeueInputBuffer(buffer)
  override fun queueInputBuffer(buffer:DecoderInputBuffer) {
   if(!buffer.isEndOfStream||padded){delegate.queueInputBuffer(buffer);return}
-  padded=true
-  if(delaySamples==0){delegate.queueInputBuffer(buffer);return}
-  // Encoders may not accept a follow-up dequeue at EOS, so put silence and EOS on the same buffers.
-  var remaining=delaySamples
-  var timeUs=buffer.timeUs
-  var current=buffer
-  while(true){
-   val leftover=writeSilence(current,timeUs,remaining,eos=remaining<=maxFrames(current))
-   if(leftover.second==0)return
-   timeUs=leftover.first;remaining=leftover.second
-   if(!delegate.maybeDequeueInputBuffer(padBuffer))throw ExportException.createForUnexpected(IllegalStateException("AAC_ENCODER_DELAY_PAD_STALLED"))
-   current=padBuffer
+  if(delaySamples==0){padded=true;delegate.queueInputBuffer(buffer);return}
+  if(remainingPad<0)remainingPad=delaySamples
+  // AudioSampleExporter sends EOS on a freshly dequeued empty buffer (already flipped,
+  // limit=0). c2.android.aac.encoder advertises max-input-size=4096, enough for one
+  // 1024-frame AAC block, not the 2048-sample (8192-byte) priming pad. Growing that
+  // codec-backed buffer throws InsufficientCapacityException. A blocking follow-up
+  // maybeDequeueInputBuffer here deadlocks when the encoder needs its output drained
+  // first (AAC_ENCODER_DELAY_PAD_STALLED on a 32s export). Pad as much as fits, and
+  // if more remains strip EOS so Media3's next pump (after a drain) calls
+  // queueEndOfStreamToEncoder again. Never dequeue from this method.
+  // Media3 always flips before queueInputBuffer. Do not compact() codec-backed
+  // direct buffers (CCodec / Android DirectByteBuffer can throw "src == null").
+  // Production EOS buffers are empty (AudioSampleExporter asserts position==0).
+  val data=requireNotNull(buffer.data)
+  if(data.position()==0){
+   if(data.limit()==0)data.clear()
+   else if(data.limit()<data.capacity()){val n=data.limit();data.limit(data.capacity());data.position(n)}
+   else if(data.hasArray())data.compact()
   }
- }
- private fun maxFrames(buffer:DecoderInputBuffer):Int {val data=buffer.data?:return 0;val pos=data.position();data.clear();val n=data.remaining()/bytesPerFrame;data.position(pos);return n}
- private fun writeSilence(buffer:DecoderInputBuffer,startUs:Long,remaining:Int,eos:Boolean):Pair<Long,Int> {
-  buffer.clear()
-  val data=requireNotNull(buffer.data);data.clear()
-  val frames=minOf(remaining,data.remaining()/bytesPerFrame)
+  try{buffer.ensureSpaceForWrite(remainingPad*bytesPerFrame)}catch(_:IllegalStateException){/* ungrowable codec buffer */}
+  val buf=requireNotNull(buffer.data)
+  val frames=minOf(remainingPad,buf.remaining()/bytesPerFrame)
   if(frames<=0)throw ExportException.createForUnexpected(IllegalStateException("AAC_ENCODER_DELAY_PAD_EMPTY"))
-  val n=frames*bytesPerFrame
-  data.put(ByteArray(n));data.flip()
-  buffer.timeUs=startUs;buffer.setFlags(0);if(eos)buffer.addFlag(C.BUFFER_FLAG_END_OF_STREAM)
+  if(padStartUs==C.TIME_UNSET)padStartUs=buffer.timeUs
+  buffer.timeUs=padStartUs+ProductAacEncoderDelay.delayUs(delaySamples-remainingPad,sampleRate)
+  buf.put(ByteArray(frames*bytesPerFrame));buf.flip()
+  remainingPad-=frames
+  buffer.setFlags(0)
+  if(remainingPad==0){buffer.addFlag(C.BUFFER_FLAG_END_OF_STREAM);padded=true}
   delegate.queueInputBuffer(buffer)
-  return startUs+ProductAacEncoderDelay.delayUs(frames,sampleRate) to remaining-frames
  }
  override fun signalEndOfInputStream()=delegate.signalEndOfInputStream()
  override fun getOutputFormat():Format? {

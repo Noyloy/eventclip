@@ -41,8 +41,17 @@ class ProductWorkspaces(requestedRoot:File) {
  private fun save(xs:List<String>)=ProductPrivateFiles.atomic(registry,Properties().apply{setProperty("ids",xs.joinToString(","))})
  fun allocate():File{val id=UUID.randomUUID().toString();val dir=ProductPrivateFiles.child(root,id);require(!dir.exists());save(ids()+id);check(dir.mkdir());return dir}
  fun release(dir:File){require(dir.parentFile==root);ProductPrivateFiles.id(dir.name);require(dir.name in ids());ProductPrivateFiles.child(root,dir.name)
-  // These exact files are registered by allocation before any writer is allowed to start.
+  // Exact registered names only: the two PCM buses plus per-item export stills (itemId.export.jpg).
+  // Never recursive deletion; an unexpected child still fails the directory delete.
   for(name in listOf("original.wav","music.wav")){val f=ProductPrivateFiles.child(dir,name);if(f.exists())check(f.delete())}
+  dir.listFiles()?.forEach{f->
+   if(f.isFile && (f.name.endsWith(".export.jpg")||f.name.endsWith(".export.jpg.tmp"))){
+    val stem=f.name.removeSuffix(".tmp").removeSuffix(".export.jpg")
+    ProductPrivateFiles.id(stem)
+    ProductPrivateFiles.child(dir,f.name)
+    check(f.delete())
+   }
+  }
   if(dir.exists())check(dir.delete()) // unrelated child causes safe failure, never recursive deletion
   save(ids()-dir.name)
  }

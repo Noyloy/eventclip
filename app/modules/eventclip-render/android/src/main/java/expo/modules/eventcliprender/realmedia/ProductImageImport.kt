@@ -15,7 +15,37 @@ internal data class NormalizedStill(val mime:String,val width:Int,val height:Int
 
 internal object ProductImageImport {
  const val MAX_EDGE=4096
+ /** Long-edge cap for Transformer stills. Import may keep larger SDR JPEGs; prepare always flattens to this. */
+ const val EXPORT_MAX_EDGE=1280
  const val JPEG_QUALITY=90
+ /**
+  * Always write a baseline sRGB SDR JPEG at [EXPORT_MAX_EDGE] into [dest] for the export workspace.
+  * Import may leave a 12MP, Ultra HDR, motion-photo, or non-JPEG still on disk; Media3's image
+  * pipeline must not see those. Does not replace the imported source file.
+  */
+ fun exportStill(source:File,dest:File):File {
+  val sniff=ProductImageSniff.of(source)
+  if(!sniff.stillImage)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
+  val orientation=if(sniff.kind==SniffedMedia.JPEG)jpegOrientation(source)else 1
+  val owned=ArrayList<Bitmap>()
+  try {
+   val decoded=decodeSdr(source,sniff);owned.add(decoded)
+   var work=flattenSdr(decoded);if(work!==decoded)owned.add(work)
+   val oriented=applyOrientation(work,orientation);if(oriented!==work)owned.add(oriented)
+   val fitted=fitMaxEdge(oriented,EXPORT_MAX_EDGE);if(fitted!==oriented)owned.add(fitted)
+   dest.parentFile?.mkdirs()
+   val tmp=File(dest.parentFile,dest.name+".tmp")
+   try {
+    FileOutputStream(tmp).use{out->
+     if(Build.VERSION.SDK_INT>=34)fitted.gainmap=null
+     if(!fitted.compress(Bitmap.CompressFormat.JPEG,JPEG_QUALITY,out))throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
+     out.fd.sync()
+    }
+    check(tmp.length()>0 && (dest.delete()||!dest.exists()) && tmp.renameTo(dest))
+   }catch(e:Exception){tmp.delete();if(e is FoundationFailure)throw e;throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)}
+  }finally{for(b in owned.asReversed())runCatching{if(!b.isRecycled)b.recycle()}}
+  return dest
+ }
  fun normalize(file:File,sniff:MediaSniff):NormalizedStill {
   if(!sniff.stillImage)throw FoundationFailure(ImportCode.UNSUPPORTED_MEDIA)
   val orientation=if(sniff.kind==SniffedMedia.JPEG)jpegOrientation(file)else 1
@@ -119,6 +149,12 @@ internal object ProductImageImport {
    else->return src
   }
   return Bitmap.createBitmap(src,0,0,src.width,src.height,m,true)
+ }
+ private fun fitMaxEdge(src:Bitmap,maxEdge:Int):Bitmap {
+  val edge=maxOf(src.width,src.height)
+  if(edge<=maxEdge)return src
+  val scale=maxEdge.toFloat()/edge
+  return Bitmap.createScaledBitmap(src,maxOf(1,(src.width*scale).toInt()),maxOf(1,(src.height*scale).toInt()),true)
  }
  private fun jpegOrientation(file:File):Int {
   return try{
